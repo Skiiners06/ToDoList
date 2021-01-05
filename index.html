@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>TodoList</title>
+    <!-- Ajouter lien fichier css -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        .block{
+            display:block;
+        }
+
+        table{
+            margin-top:50px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th{
+            width:150px;
+        }
+        .resultat{
+            display:block;
+        }
+
+        /* Style appelé quand la case a coché est coché */
+        .ligneFaite{
+            background-color:lightgreen;
+        }
+
+    </style>
+
+</head>
+<body>
+<div id="app">
+    <h1> Todo List : </h1>
+    <div class="block">
+        <div v-for="task in tasks">
+            <input v-model="task.intitule" placeholder="Intitulé">
+            <input v-model="task.description" placeholder="Description">
+        </div>
+        <input type="button" value="Ajoutez une tâche" @click="addTask">
+    </div>
+
+    <div class="resultat">
+        <table>
+            <tr>
+                <th>Intitulé</th>
+                <th>Description</th>
+                <th>Suppr</th>
+                <th>Fait</th>
+            </tr>
+            <tr v-for="(task, index) in tasks"
+            :class="{'ligneFaite' : task.checked}"
+            >
+                <td>{{task.intitule}}</td>
+                <td>{{task.description}}</td>
+                <td><input type="button" value="supprimer" v-on:click="delTask(index)"></td>
+                <td><input class="checkbox" type="checkbox" v-model="task.checked"></td>
+
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <h1> Status : </h1>
+        <div>
+            <p>Taches Terminées : {{nbTaskFini}} </p>
+        </div>
+        <div>
+            <p>Taches en cours : {{nbTaskEnCours}}</p>
+        </div>
+        <div>
+            <p>Nombre de tâches total : {{nbTaskTotal}} </p>
+        </div>
+
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script type="text/javascript">
+    var vm = new Vue({
+        el: '#app',
+        data:{
+            tasks:[{intitule:"",description:"",checked:false}],
+        },
+        methods:{
+            addTask: function(){
+                this.tasks.push({intitule: "",description: "",checked: false})
+            },
+            delTask: function(index){
+                this.tasks.splice(index,1)
+            }
+        },
+        computed: {
+            nbTaskFini(){
+
+                let init = 0;
+                const tachesfini = this.tasks.reduce((total, courant)=> {
+                    if(courant.checked === true){
+                        return total +=1
+                    }else {
+                       return total = total
+                    }
+                },init)
+                return tachesfini
+
+                console.log(tachesfini)
+            },
+            nbTaskEnCours(){
+                return this.tasks.length - this.nbTaskFini
+            },
+            nbTaskTotal(){
+                return this.tasks.length
+            }
+
+        }
+    })
+
+</script>
+</body>
+</html>
